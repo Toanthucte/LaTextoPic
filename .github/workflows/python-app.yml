@@ -1,0 +1,38 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-lang-vietnamese texlive-pictures poppler-utils
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run syntax checks
+        run: |
+          python -m py_compile app.py core/compiler.py
+          python -c "from core.compiler import compile_tikz_to_pdf_png; print('compiler import ok')"
+
+      - name: Run tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q

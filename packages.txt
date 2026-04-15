@@ -1,0 +1,4 @@
+texlive-latex-base
+texlive-lang-vietnamese
+texlive-pictures
+poppler-utils
