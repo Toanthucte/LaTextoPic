@@ -1,5 +1,5 @@
 // LƯU Ý QUAN TRỌNG: Khi Push code lên GitHub cho PWA, NGAY LẬP TỨC phải CẬP NHẬT phiên bản CACHE_NAME này!
-const CACHE_NAME = 'latextopic-v1.0.1'
+const CACHE_NAME = 'latextopic-v1.0.2'
 
 // Các file cần lưu cache (offline)
 const urlsToCache = ['./', 'manifest.json', 'icon.png']
@@ -33,13 +33,10 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
+  // Chiến lược: Network First (Luôn luôn lấy code mới nhất trước, nếu mất mạng mới dùng Cache)
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // TÌm thấy trong cache thì trả về
-      if (response) {
-        return response
-      }
-      return fetch(event.request)
+    fetch(event.request).catch(function () {
+      return caches.match(event.request)
     }),
   )
 })
