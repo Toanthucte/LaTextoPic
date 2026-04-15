@@ -11,7 +11,7 @@ def compile_tikz_to_pdf_png(tikz_code: str, transparent: bool = False):
     """
     # 1. Bọc thẻ Preamble ẩn
     preamble = r"""\documentclass[tikz,border=2bp]{standalone}
-\usepackage[utf8]{vietnam}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
 \usepackage{pgfplots}
 \usepackage{tkz-euclide}
@@ -45,9 +45,10 @@ def compile_tikz_to_pdf_png(tikz_code: str, transparent: bool = False):
             check=True
         )
     except subprocess.CalledProcessError as e:
+        error_logs = e.stdout.decode('utf-8', errors='ignore')
         print("Lỗi biên dịch LaTeX:")
-        print(e.stdout.decode('utf-8', errors='ignore'))
-        raise RuntimeError("Biên dịch LaTeX thất bại! Vui lòng kiểm tra kỹ cú pháp.")
+        print(error_logs)
+        raise RuntimeError(f"Biên dịch LaTeX thất bại! Vui lòng kiểm tra kỹ cú pháp.\n\nChi tiết lỗi từ pdflatex:\n```\n{error_logs[-1500:]}\n```")
         
     pdf_path = os.path.join(tmp_folder, f"target_{unique_id}.pdf")
     png_path = os.path.join(tmp_folder, f"target_{unique_id}.png")

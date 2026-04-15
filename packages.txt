@@ -1,3 +1,6 @@
 texlive-latex-base
 texlive-pictures
 poppler-utils
+texlive-latex-extra
+texlive-science
+texlive-lang-other
