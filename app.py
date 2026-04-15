@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import os
 from datetime import datetime, timedelta, timezone
 from core.compiler import compile_tikz_to_pdf_png
@@ -93,7 +94,43 @@ def main():
     with tab2:
         st.header("🔍 Pic-to-Text: Tìm kiếm ảnh TikZ (Tính năng đang phát triển)")
         st.info("Tính năng truy vấn bằng AI (Sử dụng CLIP & FAISS) giúp bạn upload ảnh và tìm ra đoạn code TikZ mẫu trong kho dữ liệu sẽ sớm được cập nhật ở phiên bản tiếp theo.")
-        st.file_uploader("Kéo thả hình ảnh Toán học tại đây để tìm kiếm code", type=['png', 'jpg', 'jpeg'])
+        st.file_uploader("KÃ©o tháº£ hÃ¬nh áº£nh ToÃ¡n há»c táº¡i Ä‘Ã¢y Ä‘á»ƒ tÃ¬m kiáº¿m code", type=['png', 'jpg', 'jpeg'])
+
+    # --- PWA INJECTION ---
+    pwa_html = """
+    <script>
+        const head = window.parent.document.head;
+        if (!head.querySelector('link[rel="manifest"]')) {
+            const manifest = window.parent.document.createElement('link');
+            manifest.rel = 'manifest';
+            manifest.href = 'app/static/manifest.json';
+            head.appendChild(manifest);
+        }
+        
+        const metas = [
+            {name: 'apple-mobile-web-app-capable', content: 'yes'},
+            {name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
+            {name: 'mobile-web-app-capable', content: 'yes'}
+        ];
+        metas.forEach(m => {
+            if (!head.querySelector('meta[name="' + m.name + '"]')) {
+                const el = window.parent.document.createElement('meta');
+                el.name = m.name; el.content = m.content;
+                head.appendChild(el);
+            }
+        });
+        
+        if ('serviceWorker' in window.parent.navigator) {
+            window.parent.navigator.serviceWorker.register('app/static/sw.js')
+            .then(function(reg) {
+                console.log('SW Registered', reg);
+            }).catch(function(err) {
+                console.log('SW Failed', err);
+            });
+        }
+    </script>
+    """
+    components.html(pwa_html, height=0, width=0)
 
 if __name__ == "__main__":
     main()
