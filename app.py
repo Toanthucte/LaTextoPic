@@ -73,7 +73,7 @@ def main():
                                     label="📥 Tải xuống PNG",
                                     data=f_png,
                                     file_name=png_name,
-                                    mime="image/png",
+                                    mime="application/octet-stream",
                                     use_container_width=True
                                 )
                             with open(pdf_path, "rb") as f_pdf:
@@ -81,7 +81,7 @@ def main():
                                     label="📥 Tải xuống PDF (Vector)",
                                     data=f_pdf,
                                     file_name=pdf_name,
-                                    mime="application/pdf",
+                                    mime="application/octet-stream",
                                     use_container_width=True
                                 )
                         else:

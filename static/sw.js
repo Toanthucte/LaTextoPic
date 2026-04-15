@@ -1,5 +1,5 @@
 // LƯU Ý QUAN TRỌNG: Khi Push code lên GitHub cho PWA, NGAY LẬP TỨC phải CẬP NHẬT phiên bản CACHE_NAME này!
-const CACHE_NAME = 'latextopic-v1.0.0'
+const CACHE_NAME = 'latextopic-v1.0.1'
 
 // Các file cần lưu cache (offline)
 const urlsToCache = ['./', 'manifest.json', 'icon.png']
