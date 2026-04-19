@@ -248,11 +248,24 @@ def main():
         st.markdown("Chọn một mẫu hình và điền các tham số. Hệ thống sẽ tự động ghép thành mã TikZ chuẩn và gửi sang Trình biên dịch.")
         
         template_choice = st.selectbox("Chọn mẫu hình:", [
-            "Hình chóp S.ABC (SA ⊥ đáy)", 
+            "Hình chóp S.ABC (SA ⊥ đáy)",
+            "Hình chóp SAB (SAB ⊥ đáy ABC)",
+            "Chóp tứ giác SA ⊥ ABCD",
             "Hình Cầu, mặt cầu (3D bóng mờ)",
             "Hình Nón",
             "Hình Trụ",
+            "Lăng trụ đứng tam giác",
+            "Hình hộp chữ nhật",
+            "Lăng trụ xiên tam giác",
+            "Đồ thị Parabol (bậc 2)",
             "Đồ thị hàm bậc 3 (ax³+bx²+cx+d)",
+            "Đồ thị hàm trùng phương (ax⁴+bx²+c)",
+            "Đồ thị sin",
+            "Đồ thị cos",
+            "Đồ thị tan",
+            "Đồ thị cot",
+            "Đồ thị hàm mũ",
+            "Đồ thị logarit",
             "Đồ thị hàm phân thức (ax+b)/(cx+d)"
         ])
         
@@ -285,6 +298,59 @@ def main():
 	\\tkzLabelPoints[below]({B_name})
 	\\tkzLabelPoints[left]({A_name})
 	\\tkzLabelPoints[right]({C_name})
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Hình chóp SAB (SAB ⊥ đáy ABC)":
+            st.subheader("1. Tham số khối chóp")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                h_val = st.slider("Chiều cao S so với AB (h)", min_value=2.0, max_value=8.0, value=3.0, step=0.5)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.5, max_value=2.0, value=1.0, step=0.1)
+            with col_b:
+                A_name = st.text_input("Tên đỉnh A", value="A")
+                B_name = st.text_input("Tên đỉnh B", value="B")
+                C_name = st.text_input("Tên đỉnh C", value="C")
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\tkzDefPoints{{0/0/{A_name},1.2/-1.8/{B_name},4.5/0/{C_name}}}
+	\\coordinate (H) at ($({A_name})!0.5!({B_name})$);
+	\\coordinate (S) at ($(H)+(0,{h_val})$);
+	\\tkzDrawPolygon(S,{A_name},{B_name},{C_name})
+	\\tkzDrawSegments(S,{B_name})
+	\\tkzDrawSegments[dashed]({A_name},{C_name} H)
+	\\tkzDrawPoints[fill=black,size=4]({A_name},{B_name},{C_name},S,H)
+	\\tkzMarkRightAngles[size=0.16](S,H,{A_name} S,H,{C_name})
+	\\tkzLabelPoints[above](S)
+	\\tkzLabelPoints[below]({B_name})
+	\\tkzLabelPoints[left]({A_name})
+	\\tkzLabelPoints[right]({C_name})
+	\\tkzLabelPoints[below left](H)
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Chóp tứ giác SA ⊥ ABCD":
+            st.subheader("1. Tham số chóp tứ giác")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                h_val = st.slider("Chiều cao S (h)", min_value=2.0, max_value=8.0, value=3.0, step=0.5)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.5, max_value=2.0, value=0.9, step=0.1)
+            with col_b:
+                pass
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\tkzDefPoints{{0/0/A, -1.5/-1.5/B, 3/-1.5/C}}
+	\\coordinate (D) at ($(A)+(C)-(B)$);
+	\\coordinate (S) at ($(A)+(0,{h_val})$);
+	\\tkzDrawPolygon(S,B,C,D)
+	\\tkzDrawSegments(S,C)
+	\\tkzDrawSegments[dashed](S,A A,B A,D)
+	\\tkzDrawPoints[fill=black,size=4](A,B,C,D,S)
+	\\tkzMarkRightAngles[size=0.16](S,A,B S,A,D)
+	\\tkzLabelPoints[above](S)
+	\\tkzLabelPoints[below](B,C)
+	\\tkzLabelPoints[left](A)
+	\\tkzLabelPoints[right](D)
 \\end{{tikzpicture}}"""
 
         elif template_choice == "Đồ thị hàm bậc 3 (ax³+bx²+cx+d)":
@@ -398,6 +464,232 @@ def main():
 	\\fill (O1) circle (1.5pt) node[below] {{$O$}};
 	\\fill (O2) circle (1.5pt) node[above] {{$O'$}};
 \\end{{tikzpicture}}"""
+
+        elif template_choice == "Lăng trụ đứng tam giác":
+            st.subheader("1. Tham số Lăng trụ đứng tam giác")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                h_val = st.slider("Chiều cao lăng trụ (h)", min_value=2.0, max_value=8.0, value=4.0, step=0.5)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.5, max_value=2.0, value=0.9, step=0.1)
+            with col_b:
+                pass
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\tkzDefPoints{{0/0/A, 1.5/-1.5/B, 4/0/C}}
+	\\coordinate (A') at ($(A)+(0,{h_val})$);
+	\\coordinate (B') at ($(B)+(0,{h_val})$);
+	\\coordinate (C') at ($(C)+(0,{h_val})$);
+	\\tkzDrawPolygon(A',B',C')
+	\\tkzDrawSegments(A,A' B,B' C,C' A,B B,C)
+	\\tkzDrawSegments[dashed](A,C)
+	\\tkzDrawPoints[fill=black,size=4](A,B,C,A',B',C')
+	\\tkzLabelPoints[above](A',B',C')
+	\\tkzLabelPoints[below](B)
+	\\tkzLabelPoints[left](A)
+	\\tkzLabelPoints[right](C)
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Hình hộp chữ nhật":
+            st.subheader("1. Tham số Hình hộp chữ nhật")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                h_val = st.slider("Chiều cao hộp (h)", min_value=2.0, max_value=8.0, value=3.0, step=0.5)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=2.0, value=0.8, step=0.1)
+            with col_b:
+                pass
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\tkzDefPoints{{0/0/A, -1.5/-1.5/B, 3/-1.5/C}}
+	\\coordinate (D) at ($(A)+(C)-(B)$);
+	\\coordinate (A') at ($(A)+(0,{h_val})$);
+	\\coordinate (B') at ($(B)+(0,{h_val})$);
+	\\coordinate (C') at ($(C)+(0,{h_val})$);
+	\\coordinate (D') at ($(D)+(0,{h_val})$);
+	\\tkzDrawPolygon(A',B',C',D')
+	\\tkzDrawSegments(B,C C,D B,B' C,C' D,D')
+	\\tkzDrawSegments[dashed](A,B A,D A,A')
+	\\tkzDrawPoints[fill=black,size=4](A,B,C,D,A',B',C',D')
+	\\tkzLabelPoints[above](A',B',C',D')
+	\\tkzLabelPoints[below](B,C)
+	\\tkzLabelPoints[left](A)
+	\\tkzLabelPoints[right](D)
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Lăng trụ xiên tam giác":
+            st.subheader("1. Tham số Lăng trụ xiên tam giác")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                h_val = st.slider("Chiều cao dời (h)", min_value=2.0, max_value=8.0, value=4.0, step=0.5)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.5, max_value=2.0, value=0.9, step=0.1)
+            with col_b:
+                pass
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\tkzDefPoints{{0/0/A,1.2/-1.5/B,3.5/0/C}}
+	\\coordinate (H) at ($(A)!1/2!(B)$);
+	\\coordinate (A') at ($(H)+(0,{h_val})$);
+	\\tkzDefPointsBy[translation = from A to A'](B,C){{B'}}{{C'}}
+	\\tkzDrawPolygon(A,B,C,C',B',A')
+	\\tkzDrawSegments(A',C' B',B A',H)
+	\\tkzDrawSegments[dashed](A,C)
+	\\tkzDrawPoints[fill=black,size=4](A,C,B,A',B',C')
+	\\tkzLabelPoints[above](B')
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị Parabol (bậc 2)":
+            st.subheader("1. Tham số Đồ thị Parabol")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                a_val = st.number_input("Hệ số a", value=1.0)
+                b_val = st.number_input("Hệ số b", value=-4.0)
+                c_val = st.number_input("Hệ số c", value=3.0)
+            with col_b:
+                x_min = st.number_input("x min", value=-4.0)
+                x_max = st.number_input("x max", value=4.0)
+                y_min = st.number_input("y min", value=-2.0)
+                y_max = st.number_input("y max", value=4.0)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale) ", min_value=0.3, max_value=2.0, value=0.8, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\a{{{a_val}}} \\def\\b{{{b_val}}} \\def\\c{{{c_val}}}
+	\\def\\xmin{{{x_min}}} \\def\\xmax{{{x_max}}}
+	\\def\\ymin{{{y_min}}} \\def\\ymax{{{y_max}}}
+	\\draw[<->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[<->] (0,\\ymin)--(0,\\ymax) node [left]{{$y$}};
+	\\node at (0,0) [below left]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=100, thick] plot(\\x,{{\\a*(\\x)^2+\\b*(\\x)+\\c}});
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị hàm trùng phương (ax⁴+bx²+c)":
+            st.subheader("1. Tham số Đồ thị Trùng phương")
+            col_a, col_b = st.columns(2)
+            with col_a:
+                a_val = st.number_input("Hệ số a", value=1.0)
+                b_val = st.number_input("Hệ số b", value=-4.0)
+                c_val = st.number_input("Hệ số c", value=3.0)
+            with col_b:
+                x_min = st.number_input("x min", value=-6.0)
+                x_max = st.number_input("x max", value=6.0)
+                y_min = st.number_input("y min", value=-8.0)
+                y_max = st.number_input("y max", value=8.0)
+                scale_val = st.slider("Tỷ lệ thu phóng (scale) ", min_value=0.3, max_value=2.0, value=0.5, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\a{{{a_val}}} \\def\\b{{{b_val}}} \\def\\c{{{c_val}}}
+	\\def\\xmin{{{x_min}}} \\def\\xmax{{{x_max}}}
+	\\def\\ymin{{{y_min}}} \\def\\ymax{{{y_max}}}
+	\\draw[color=gray!50,dashed] (\\xmin,\\ymin) grid (\\xmax,\\ymax);
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [left]{{$y$}};
+	\\node at (0,0) [below left]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=100] plot(\\x,{{\\a*(\\x)^4+\\b*(\\x)^2+\\c}});
+\\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị sin":
+            st.subheader("1. Tham số Đồ thị Sin")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.7, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmin{{-7}} \\def\\xmax{{7}} \\def\\ymin{{-1.5}} \\def\\ymax{{1.8}}
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [right]{{$y$}};
+	\\node at (0,0) [below right]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=200,domain=\\xmin:\\xmax] plot(\\x,{{sin(\\x r)}});
+	\\draw[dashed] (\\xmin,1)--(\\xmax,1) (\\xmin,-1)--(\\xmax,-1);
+\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị cos":
+            st.subheader("1. Tham số Đồ thị Cos")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.7, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmin{{-7}} \\def\\xmax{{7}} \\def\\ymin{{-1.5}} \\def\\ymax{{1.8}}
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [right]{{$y$}};
+	\\node at (0,0) [below right]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=200,domain=\\xmin:\\xmax] plot(\\x,{{cos(\\x r)}});
+	\\draw[dashed] (\\xmin,1)--(\\xmax,1) (\\xmin,-1)--(\\xmax,-1);
+\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị tan":
+            st.subheader("1. Tham số Đồ thị Tan")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.7, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmin{{-4.5}} \\def\\xmax{{4.5}} \\def\\ymin{{-3}} \\def\\ymax{{3}}
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [right]{{$y$}};
+	\\node at (0,0) [below right]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=200,domain=-1.4:1.4] plot(\\x,{{tan(\\x r)}});
+	\\draw[smooth,samples=200,domain=1.7:4.5] plot(\\x,{{tan(\\x r)}});
+	\\draw[smooth,samples=200,domain=-4.5:-1.7] plot(\\x,{{tan(\\x r)}});
+	\\foreach \\x in {{-1.5*pi,-0.5*pi,0.5*pi,1.5*pi}}
+	{{\\draw[dashed, color=red] (\\x,\\ymin)--(\\x,\\ymax);}}
+\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị cot":
+            st.subheader("1. Tham số Đồ thị Cot")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.7, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmin{{-4.5}} \\def\\xmax{{4.5}} \\def\\ymin{{-3}} \\def\\ymax{{3}}
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [right]{{$y$}};
+	\\node at (0,0) [below right]{{$O$}};
+	\\clip (\\xmin+0.1,\\ymin+0.1) rectangle (\\xmax-0.5,\\ymax-0.1);
+	\\draw[smooth,samples=200,domain=-3:-0.14] plot(\\x,{{cot(\\x r)}});
+	\\draw[smooth,samples=200,domain=0.14:3] plot(\\x,{{cot(\\x r)}});
+	\\draw[smooth,samples=200,domain=3.28:4.5] plot(\\x,{{cot(\\x r)}});
+	\\draw[smooth,samples=200,domain=-4.5:-3.28] plot(\\x,{{cot(\\x r)}});
+	\\foreach \\x in {{-1*pi,pi}}
+	{{\\draw[dashed, color=red] (\\x,\\ymin)--(\\x,\\ymax);}}
+\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị hàm mũ":
+            st.subheader("1. Tham số Đồ thị Hàm mũ")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.6, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmin{{-6}} \\def\\xmax{{6}} \\def\\ymax{{7}}
+	\\draw[color=gray!50,dashed] (\\xmin,-0.9) grid (\\xmax,\\ymax);
+	\\draw[->] (\\xmin,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,-0.9)--(0,\\ymax) node [left]{{$y$}};
+	\\node at (0,0) [below left]{{$O$}};
+	\\clip (\\xmin,-0.9) rectangle (\\xmax-0.1,\\ymax-0.1);
+	\\draw[smooth,samples=100] plot(\\x,{{2^(\\x)}});
+	\\draw[smooth,samples=100] plot(\\x,{{0.3^(\\x)}});
+\end{{tikzpicture}}"""
+
+        elif template_choice == "Đồ thị logarit":
+            st.subheader("1. Tham số Đồ thị Logarit")
+            scale_val = st.slider("Tỷ lệ thu phóng (scale)", min_value=0.4, max_value=1.5, value=0.6, step=0.1)
+            if st.button("⚙️ Sinh mã \& Gửi sang Trình biên dịch", type="primary"):
+                st.session_state.trigger_tutorial = True
+                generated_code = f"""\\begin{{tikzpicture}}[scale={scale_val},>=stealth, font=\\footnotesize, line join=round, line cap=round]
+	\\def\\xmax{{6}} \\def\\ymin{{-4}} \\def\\ymax{{4}}
+	\\draw[color=gray!50,dashed] (-0.9,\\ymin) grid (\\xmax,\\ymax);
+	\\draw[->] (-0.9,0)--(\\xmax,0) node [below]{{$x$}};
+	\\draw[->] (0,\\ymin)--(0,\\ymax) node [left]{{$y$}};
+	\\node at (0,0) [above left]{{$O$}};
+	\\clip (-0.9,\\ymin) rectangle (\\xmax-0.1,\\ymax-0.1);
+	\\draw[smooth,samples=300,domain=0.01:\\xmax] plot(\\x,{{ln(\\x)/ln(2)}});
+	\\draw[smooth,samples=300,domain=0.01:\\xmax] plot(\\x,{{ln(\\x)/ln(0.3)}});
+\end{{tikzpicture}}"""
 
         elif template_choice == "Đồ thị hàm phân thức (ax+b)/(cx+d)":
             st.subheader("1. Tham số Đồ thị")
